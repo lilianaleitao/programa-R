@@ -1,1 +1,24 @@
 # programa-R
+###########################################################
+#######       PGM522- Análise de Experimentos       ####### 
+#######                Liliana Leitão               #######
+###########################################################
+
+#Estatística descritiva
+mean(PopulaçãoA)
+var(PopulaçãoA)
+median(PopulaçãoA)
+#moda
+d<-table(PopulaçãoA);d
+d[d == max(d)]
+max(PopulaçãoA)
+min(PopulaçãoA)
+#amplitude
+menor<-min(PopulaçãoA);menor
+maior<-max(PopulaçãoA);maior
+amplitude<-maior-menor; amplitude
+sd(PopulaçãoA)
+#erro padrão da média
+sd(PopulaçãoA)/sqrt(length(PopulaçãoA))
+#coeficiente de variação
+(sd(PopulaçãoA)/mean(PopulaçãoA))*100
