@@ -1,1 +1,49 @@
 # programa-R
+###########################################################
+#######       PGM522- Análise de Experimentos       ####### 
+#######                Liliana Leitão               #######
+###########################################################
+
+#Lista de exercicio 4
+
+#DELINEAMENTO EM BLOCOS CASUALIZADOS COMPLETOS - DBCC
+
+#Modelo: Yij = m + ti + bj + eij
+
+# Yij: observação da parcela que recebeu o i-esimo tratamento na j-esima repetição;
+# m: média geral associada a todas as repetições;
+# ti: efeito ("Fixo ou Aleatorio") do i-esimo tratamento;
+# bj: efeito ("Aleatorio") do j-esimo bloco;
+# eij: erro aleatorio associado a observação Yij.
+
+#------------------------------------------------------------------------------------
+#Definindo diretorio
+setwd("C:\\Users\\Liliana Leitão\\Desktop\\Análise de Experimentos\\R studio\\Rotinas R")
+dir()
+dados<-read.table("Lista4Q1.txt", h=T)
+AOVDados<-aov(Nota ~ Trat, data = dados)
+
+# Extraindo os resíduos do conjunto de dados para análise dos pressupostos
+AOVDados$residuals
+
+#Analise de variancia
+library("ExpDes.pt")
+
+dbc(trat=dados$Trat, bloco=dados$Bloc, resp=dados$Nota, quali = TRUE, mcomp = "tukey", nl=FALSE,
+    hvar='oneillmathews', sigT = 0.05, sigF = 0.05)
+
+#------------------------------------------------------------------------------------
+#Analise de variancia e regressão
+
+analiseDBC<-dbc(trat=dados$Trat, bloc=dados$Bloc, resp=dados$Nota, quali = FALSE)
+
+# Linear
+graficos(analiseDBC, grau = 1, mod = TRUE, main = "Gráfico Regressão ", sub = " ",
+         xlab = "Trat", ylab = "Nota", pch = 19,
+         xlim = NULL, ylim = NULL, bty = "o")
+
+# Quadratica
+graficos(analiseDBC, grau = 2, mod = TRUE, main = "Gráfico Regressão ", sub = " ",
+         xlab = "Trta", ylab = "Nota", pch = 19,
+         xlim = NULL, ylim = NULL, bty = "o")
+#------------------------------------------------------------------------------------
