@@ -1,1 +1,69 @@
 # programa-R
+###########################################################
+#######       PGM522- Análise de Experimentos       ####### 
+#######                Liliana Leitão               #######
+###########################################################
+
+#DELINEAMENTO INTEIRAMENTE CASUALIZADO - DIC
+
+#Modelo: Yij = m + ti + eij
+
+# Yij: observação da parcela que recebeu o i-esimo tratamento na j-esima repetição;
+# m: média geral associada a todas as repetições;
+# ti: efeito ("Fixo ou Aleatorio") do i-esimo tratamento;
+# eij: erro aleatorio associado a observação Yij.
+
+#------------------------------------------------------------------------------------
+#Definindo diretorio
+setwd("C:\\Users\\Liliana Leitão\\Desktop\\Análise de Experimentos\\R studio\\Rotinas R")
+dir()
+dados<-read.table("Lista3Q2.txt", h=T)
+str(dados)
+
+#Análise de Variância
+AOVDados<-aov(ER ~ Trat, data = dados)
+anova(AOVDados)
+
+#Coeficiente de Variação (%)
+library(agricolae)
+cv.model(AOVDados) 
+
+
+#PACOTE ExpDes.pt
+
+library(ExpDes.pt)
+
+#Pressupostos
+dic(trat=dados$Trat, resp=dados$ER, quali = TRUE, mcomp = "tukey", nl = FALSE,
+    hvar='bartlett', sigT = 0.05, sigF = 0.05) 
+
+#------------------------------------------------------------------------------------
+#Teste de comparação de médias 
+
+Anava <- anova(AOVDados)
+#Graus de liberdade do erro
+GLE <- Anava[2,1]  
+#Soma de quadrados do erro
+SQE <- Anava[1,2]
+
+#teste Tukey (comparações de médias)
+tukey(dados$ER, dados$Trat,GLE,SQE) 
+
+#teste Lsd 
+lsd(dados$ER, dados$Trat,GLE,SQE)
+
+#teste lsd com correção de bonferroni
+lsdb(dados$ER, dados$Trat,GLE,SQE)
+
+#teste Duncan 
+duncan(dados$ER, dados$Trat,GLE,SQE)
+
+#teste SNK 
+snk(dados$ER, dados$Trat,GLE,SQE)
+
+#------------------------------------------------------------------------------------
+#Teste de agrupamento de médias 
+
+#teste Scott Knott 
+scottknott(dados$ER, dados$Trat,GLE,SQE)
+#------------------------------------------------------------------------------------
