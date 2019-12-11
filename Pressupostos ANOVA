@@ -1,1 +1,191 @@
 # programa-R
+###########################################################
+#######       PGM522- Análise de Experimentos       ####### 
+#######                Liliana Leitão               #######
+###########################################################
+
+#Lista de exercício 3 
+#Questão 2
+
+#Pressupostos da ANOVA
+
+# 1) Normalidade dos erros (Os erros devem seguir distribuiçao Normal)
+# 2) Homocedasticidade dos erros (Os erros devem ser homogeneos)
+# 3) Independêcia dos erros (Os erros devem ser independentes)
+# 4) Aditividade do modelo (O modelo deve conter apenas efeitos aditivos)
+
+#----------------------------------------------------------------------------------------
+#Definindo diretório
+setwd("C:\\Users\\Liliana Leitão\\Desktop\\Análise de Experimentos\\R studio\\Rotinas R")
+dir()
+dados<-read.table("Lista3Q2.txt", h=T)
+str(dados)
+
+AOVDados<-aov(ER ~ Trat, data = dados)
+
+#Extraindo os residuos do conjunto de dados para análise dos pressupostos
+AOVDados$residuals
+
+#---------------------------------------------------------------------------------------
+#1) Normalidade dos erros
+
+#Teste Shapiro-Wilk
+shapiro.test(AOVDados$residuals)
+
+#Hipóteses
+#H0: Os erros seguem distribuição normal
+#Ha: Os erros não seguem distribuição normal
+
+#Interpretação
+#P-valor> 0,05, teste não significativo, não se rejeita H0 
+#P-valor< 0,05, teste significativo, rejeita-se H0  
+
+#Os erros não seguem distribuição normal
+
+#Grafico da normalidade
+install.packages("fBasics")
+library(fBasics)
+
+qqnormPlot(AOVDados$residuals)  
+
+histPlot(x = as.timeSeries(AOVDados$residuals)) 
+
+#---------------------------------------------------------------------------------------
+# 2) Homocedasticidade dos erros
+
+#Teste Bartlett
+bartlett.test(ER~Trat,data=dados)
+
+#Hipóteses
+#H0: As variâncias dos erros são homogêneas
+#Ha: As variâncias dos erros não são homogêneas
+
+#Interpretação
+#P-valor> 0,05, teste não significativo, não se rejeita H0 
+#P-valor< 0,05, teste significativo, rejeita-se H0
+
+#As variâncias dos erros não são homogênas
+
+#---------------------------------------------------------------------------------------
+# 3) Independência dos erros
+
+install.packages("car")    
+library("car")
+
+#Teste Durbin-Watson
+dwt(lm(AOVDados))
+
+#Hipóteses
+#H0: Os erros sÃo independentes
+#Ha: Os erros não sÃo independentes
+
+#Interpretação
+#P-valor> 0,05, teste não significativo, não se rejeita H0 
+#P-valor< 0,05, teste significativo, rejeita-se H0
+
+#Os erros sÃo independentes
+
+#---------------------------------------------------------------------------------------
+# 4) Aditividade do modelo
+
+install.packages("asbio")
+library(asbio)
+
+#Teste de aditividade de Tukey
+
+tukey.add.test(dados$ER,  dados$Rep, dados$Trat)
+
+#Hipóteses
+#H0: O modelo contem apenas efeitos aditivos
+#Ha: O modelo não contem apenas efeitos aditivos
+
+#Interpretação
+#P-valor> 0,05, teste não significativo, não se rejeita H0 
+#P-valor< 0,05, teste significativo, rejeita-se H0
+
+#O modelo não contem apenas efeitos aditivos
+#Obs: No DIC não há o pressuposto da aditividade, pois há somente o efeito de tratamento na análise
+
+#---------------------------------------------------------------------------------------
+#Lista de exercício 3 
+#Questão 3
+
+#Definindo diretório
+setwd("C:\\Users\\Liliana Leitão\\Desktop\\Análise de Experimentos\\R studio\\Rotinas R")
+dir()
+dados<-read.table("Lista3Q3.txt", h=T)
+str(dados)
+
+AOVDados<-aov(CE ~ Trat, data = dados)
+
+#Extraindo os residuos do conjunto de dados para análise dos pressupostos
+AOVDados$residuals
+
+#Teste Shapiro-Wilk (Normalidade)
+shapiro.test(AOVDados$residuals)
+
+#Teste Bartlett (Homogeneidade)
+bartlett.test(CE~Trat,data=dados)
+
+#Teste Durbin-Watson (Independencia)
+library("car")
+dwt(lm(AOVDados))
+#---------------------------------------------------------------------------------------
+#Lista de exercício 3 
+#Questão 4
+
+#Definindo diretório
+setwd("C:\\Users\\Liliana Leitão\\Desktop\\Análise de Experimentos\\R studio\\Rotinas R")
+dir()
+dados<-read.table("Lista3Q4.txt", h=T)
+str(dados)
+
+AOVDados<-aov(MS ~ Trat, data = dados)
+
+#Extraindo os residuos do conjunto de dados para análise dos pressupostos
+AOVDados$residuals
+
+#Teste Shapiro-Wilk (Normalidade)
+shapiro.test(AOVDados$residuals)
+
+#Teste Bartlett (Homogeneidade)
+bartlett.test(MS~Trat,data=dados)
+
+#Teste Durbin-Watson (Independencia)
+library("car")
+dwt(lm(AOVDados))
+
+library("ExpDes.pt")
+dic(trat=dados$Trat, resp=dados$MS, quali = TRUE, mcomp = "tukey", nl = FALSE,
+    hvar='bartlett', sigT = 0.05, sigF = 0.05)
+#---------------------------------------------------------------------------------------
+
+#Lista de exercício 4 
+#Questão 1- DBC, TRAT=16, BLOCO=3
+
+dados<-read.table("Lista4Q1.txt", h=T)
+str(dados)
+
+AOVDados<-aov(Nota ~ Trat, data = dados)
+
+#Extraindo os residuos do conjunto de dados para análise dos pressupostos
+AOVDados$residuals
+
+#Teste Shapiro-Wilk (Normalidade)
+shapiro.test(AOVDados$residuals)
+
+#Teste Bartlett (Homogeneidade)
+bartlett.test(Nota~Trat,data=dados)
+
+#Teste Durbin-Watson (Independencia)
+library("car")
+dwt(lm(AOVDados))
+
+#Teste de aditividade de Tukey
+library(asbio)
+tukey.add.test(dados$Nota,  dados$Rep, dados$Trat)
+
+#ANOVA
+library("ExpDes.pt")
+dbc (trat=dados$Trat, bloco=dados$Bloc, resp=dados$Nota, quali = TRUE, mcomp = "scottnott", nl = FALSE,
+    sigT = 0.05, sigF = 0.05)
